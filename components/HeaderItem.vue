@@ -29,7 +29,7 @@
 @use "~/assets/css/main.scss";
   .header {
     width: 100%;
-    padding: 2rem 0;
+    padding-top: 2rem;
     .row {
       display: flex;
       justify-content: space-between;
