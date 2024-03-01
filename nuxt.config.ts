@@ -10,8 +10,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      link: [{ rel: 'stylesheet', href: 'https://api.fontshare.com/v2/css?f[]=satoshi@700&display=swap' }],
-      script: [{ src: '/plugins/pixel.js', defer: true}]
+      link: [{ rel: 'stylesheet', href: 'https://api.fontshare.com/v2/css?f[]=satoshi@700&display=swap' }]
     }
   }
 })
