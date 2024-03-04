@@ -8,7 +8,7 @@
 
   const {width, height} = useWindowSize()
   const aspectRatio = computed(()=> width.value / height.value)
- 
+  var time = 0;
 
   // gui.add(cameraPosition.value, 'x', -100, 100);
   // gui.add(cameraPosition.value, 'y', -100, 100);
@@ -22,34 +22,52 @@
   camera.position.set(0,0,0);
   scene.add(camera);
 
-  const texture = new THREE.TextureLoader().load('/images/TitreMael.png' ); 
-  // immediately use the texture for material creation 
+  
+  var textureLoader = new THREE.TextureLoader();
+  var texture = textureLoader.load('/images/TitreMael.png');
+  var material = new THREE.ShaderMaterial({
+     
 
-  const material = new THREE.ShaderMaterial( {
-     vertexShader: `
-      void main() {
-        gl_Position = vec4(position, 1.0);
-      }
-     `,
+    uniforms: {
 
-     fragmentShader: `
-      void main() {
-        gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+      uTime: {
+        value: time
+      },
+
+      uTexture: {
+        value: texture
       }
-     `
+    
+    },
+
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = vec4( position, 1.0 );
+      }
+    `,
+
+    fragmentShader: `
+
+      uniform float uTime;
+      uniform float progress;
+      uniform sampler2D uTexture;
+
+
+      varying vec2 vUv;
+
+      void main()	{
+        gl_FragColor = texture2D(uTexture,vUv);
+      }
+    `
     });
 
-
-      const hero = document.querySelector('.hero');
-      // const bounds = hero.getBoundingClientRect()
-      const plane = new THREE.Mesh(
-      new THREE.PlaneGeometry(1.5,1.5,1,1),
-      material
-      )
-      scene.add(plane);
- 
-
- 
+  var plane = new THREE.Mesh(
+  new THREE.PlaneGeometry(1.8,1.8,1,1),
+  material
+  )
+  scene.add(plane);
 
   function setRenderer(){
     if(experience.value) {
@@ -72,6 +90,7 @@
 
   onMounted(() => {
     setRenderer();
+    render();
     // mounted.value = true
   });
 
