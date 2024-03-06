@@ -4,23 +4,23 @@
   <div class="header">
     <div class="row">
       <div class="row-c1">
-        <p>Maël Aristide</p>
-        <p>Créateur Indépendant</p>
+        <p>maël aristide</p>
+        <p>créateur indépendant</p>
       </div>
       <div class="row-c2">
         <div class="row-c2-c1">
-          <a href="#">Travaux</a>
-          <a href="#">A propos de moi</a>
-          <a href="#">Me contacter</a>
+          <a href="#">travaux</a>
+          <a href="#">à propos de moi</a>
+          <a href="#">me contacter</a>
         </div>
         <div class="row-c2-c2">
-          <a href="#">Twitter</a>
-          <a href="#">Github</a>
-          <a href="#">Instagram</a>
-          <a href="#">Dribble</a>
+          <a href="#">twitter</a>
+          <a href="#">github</a>
+          <a href="#">instagram</a>
+          <a href="#">dribble</a>
         </div>
       </div>
-      <p>Paris, France</p>
+      <p>paris, france</p>
     </div>
   </div>
 </template>
@@ -29,7 +29,7 @@
 @use "~/assets/css/main.scss";
   .header {
     width: 100%;
-    padding-top: 2rem;
+    padding-top: .5rem;
     .row {
       display: flex;
       justify-content: space-between;
@@ -48,7 +48,7 @@
         .row-c2-c1, .row-c2-c2 {
           display: flex;
           flex-direction: column;
-          gap: .6rem;
+          gap: .4rem;
         }
       }
     }
