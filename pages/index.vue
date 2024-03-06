@@ -48,7 +48,7 @@
 
 <style scoped lang="scss">
   .index {
-    padding: 0 2rem;
+    padding: 0 1rem;
 
     #projetsuivi {
       margin-top: -5rem;
