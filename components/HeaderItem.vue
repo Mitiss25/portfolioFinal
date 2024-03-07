@@ -48,7 +48,7 @@
         .row-c2-c1, .row-c2-c2 {
           display: flex;
           flex-direction: column;
-          gap: .4rem;
+          gap: .2rem;
         }
       }
     }

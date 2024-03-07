@@ -15,7 +15,8 @@ void main()	{
 	gl_FragColor = vec4(vUv,0.0,1.);
 	gl_FragColor = vec4(offset.r,0.,0.,1.);
 	gl_FragColor = color;
-	gl_FragColor = texture2D(uTexture,newUV - 0.02*offset.rg);
+	vec4 texColor = texture2D(uTexture,newUV - 0.02*offset.rg);
+	gl_FragColor = texColor;
 	// gl_FragColor = offset;
 
 }

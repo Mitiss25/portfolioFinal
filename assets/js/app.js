@@ -17,18 +17,21 @@ export default class Sketch {
     this.height = options.height;
     this.widthNuxt = this.width;
     this.heightNuxt = this.height;
-    this.renderer = new THREE.WebGLRenderer();
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true
+    });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     this.renderer.setSize(this.width, this.height);
-    this.renderer.setClearColor(0xffffff, 1);
+    // this.renderer.setClearColor(0xffffff, 1);
     this.renderer.physicallyCorrectLights = true;
     this.renderer.outputEncoding = THREE.sRGBEncoding;
 
     this.container.appendChild(this.renderer.domElement);
 
 
-    var frustumSize = 1;
-    this.camera = new THREE.OrthographicCamera(frustumSize / -2.19, frustumSize / 2.19, frustumSize / 2.19, frustumSize / -2.19, -1000, 1000);
+    var frustumSize = .9;
+    this.camera = new THREE.OrthographicCamera(frustumSize / -2., frustumSize / 2., frustumSize / 2., frustumSize / -2., -1000, 1000);
     this.camera.position.set(0, 0, 2);
 
     this.time = 0;
@@ -110,7 +113,7 @@ export default class Sketch {
 
 
     // image cover
-    this.imageAspect = .9 / 1.5;
+    this.imageAspect = .55 / 1.5;
     let a1;
     let a2;
     if (this.height / this.width > this.imageAspect) {

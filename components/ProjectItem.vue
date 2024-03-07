@@ -58,6 +58,8 @@ export default {
           width: 100%;
           height: 700px;
           object-fit: cover;
+          border-radius: 1rem;
+
         }
       }
       .column-row {

@@ -33,7 +33,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: -3rem 0 .5rem 0;
+    margin: 0 0 .5rem 0;
 
     canvas {
       width: 100%;

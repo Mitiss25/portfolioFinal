@@ -40,7 +40,7 @@
     <ClientOnly>
       <HeroItem/>
     </ClientOnly>
-    <ProjectItem  :titre="projet1.titre" :type="projet1.type" :composition="projet1.composition" :outils="projet1.outils" :date="projet1.date" :image="projet1.image" />
+    <ProjectItem id="projetsuivi" :titre="projet1.titre" :type="projet1.type" :composition="projet1.composition" :outils="projet1.outils" :date="projet1.date" :image="projet1.image" />
     <ProjectItem :titre="projet2.titre" :type="projet2.type" :composition="projet2.composition" :outils="projet2.outils" :date="projet2.date" :image="projet2.image" />
     <ProjectItem :titre="projet3.titre" :type="projet3.type" :composition="projet3.composition" :outils="projet3.outils" :date="projet3.date" :image="projet3.image" />
   </div>
@@ -51,6 +51,7 @@
   
   .index {
     margin: 0 .5rem;
+    
 
     #projetsuivi {
       margin-top: -5rem;
