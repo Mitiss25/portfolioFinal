@@ -15,7 +15,6 @@
     
   });
 
-
 </script>
 
 <template>
@@ -28,8 +27,6 @@
   .hero {
     width: 100%;
     height: 40rem;
-    position: relative;
-    z-index: -1;
     display: flex;
     justify-content: center;
     align-items: center;

@@ -10,7 +10,8 @@ function clamp(number, min, max) {
 export default class Sketch {
   constructor(options) {
     this.scene = new THREE.Scene();
-
+    this.raycaster = new THREE.Raycaster();
+    this.pointer = new THREE.Vector2();
     this.container = options.dom;
     this.img = options.pic;
     this.width = options.width;
@@ -60,23 +61,25 @@ export default class Sketch {
     return parseFloat(this.container.getAttribute('data-'+val))
   }
 
+ 
 
   mouseEvents() {
-    window.addEventListener('mousemove', (e) => {
-      this.mouse.x = e.clientX / this.width;
-      console.log('mouse x ' + this.mouse.x);
-      this.mouse.y = e.clientY / this.height;
+    this.container.addEventListener('mousemove', (e) => {
+      if(this.intersects) {
+        console.log('coucou ' + this.container)
+        this.mouse.x = e.clientX / this.width;
+        console.log('mouse x ' + this.mouse.x);
+        this.mouse.y = e.clientY / this.height;
 
-      // console.log(this.mouse.x,this.mouse.y)
+        // console.log(this.mouse.x,this.mouse.y)
 
-      this.mouse.vX = this.mouse.x - this.mouse.prevX;
-      this.mouse.vY = this.mouse.y - this.mouse.prevY;
-
-
-      this.mouse.prevX = this.mouse.x
-      this.mouse.prevY = this.mouse.y;
+        this.mouse.vX = this.mouse.x - this.mouse.prevX;
+        this.mouse.vY = this.mouse.y - this.mouse.prevY;
 
 
+        this.mouse.prevX = this.mouse.x
+        this.mouse.prevY = this.mouse.y;
+      }
       // console.log(this.mouse.vX,'vx')
     })
   }
@@ -123,6 +126,7 @@ export default class Sketch {
       a1 = 1;
       a2 = (this.height / this.width) / this.imageAspect;
     }
+
 
     this.material.uniforms.resolution.value.x = this.width;
     this.material.uniforms.resolution.value.y = this.height;
@@ -255,6 +259,8 @@ export default class Sketch {
     if (!this.isPlaying) return;
     this.time += 0.05;
     this.updateDataTexture()
+    this.raycaster.setFromCamera( this.pointer, this.camera );
+    this.intersects = this.raycaster.intersectObjects( this.scene.children );
     this.material.uniforms.time.value = this.time;
     requestAnimationFrame(this.render.bind(this));
     this.renderer.render(this.scene, this.camera);

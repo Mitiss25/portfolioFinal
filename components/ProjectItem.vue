@@ -22,19 +22,7 @@ export default {
       <div class="column-c-image">
         <img :src="(image)" :alt="(alt)" class="image">
       </div>
-      <div class="column-row">
-        <p>{{titre}}</p>
-        <p>{{type}}</p>
-        <div class="column-row-r">
-          <div class="column-row-r-c1">
-            <p v-for="(item, index) in composition" :key="(index)">{{ item }}</p>
-          </div>
-          <div class="column-row-r-c2">
-            <p v-for="(outil, index2) in outils" :key="(index2)">{{ outil }}</p>
-          </div>
-        </div>
-        <p>{{date}}</p>
-      </div>
+      <p>{{titre}}</p>
     </div>
   </div>
 </template>
@@ -43,13 +31,12 @@ export default {
 
 @use "~/assets/css/main.scss";
   .projectItem {
-    width: 100%;
-    padding-bottom: 2rem;
+    width: 628px;
 
     .column {
       display: flex;
       flex-direction: column;
-      gap: 2.75rem;
+      gap: 1.5rem;
 
       .column-c-image {
         object-fit: cover;
