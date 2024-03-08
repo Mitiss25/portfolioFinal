@@ -2,20 +2,37 @@
   import  Sketch  from '~/assets/js/app.js';
 
   const monConteneur = ref()
-  const monImage = ref()
+    const monImage = ref()
+    const imageLoaded = ref(false);
+    const componentMounted = ref(false);
+    var containerNuxt;
+    var imgNuxt;
+    var widthNuxt;
+    var heightNuxt;
 
-  onMounted(()=> {
-    const containerNuxt = monConteneur.value;
-    const imgNuxt = monImage.value;
-    const widthNuxt = containerNuxt.offsetWidth;
-    const heightNuxt = containerNuxt.offsetHeight;
-    new Sketch({dom: containerNuxt, pic: imgNuxt, width: widthNuxt, height: heightNuxt});
-  })
+    watchEffect(() => {
+      if (imageLoaded.value && componentMounted.value) {
+        new Sketch({dom: containerNuxt, pic: imgNuxt, width: widthNuxt, height: heightNuxt});
+      }
+    });
+
+    function handleImageLoad() {
+      imageLoaded.value = true;
+    }
+
+
+    onMounted(()=> {
+        componentMounted.value = true;
+        containerNuxt = monConteneur.value;
+        imgNuxt = monImage.value;
+        widthNuxt = containerNuxt.offsetWidth;
+        heightNuxt = containerNuxt.offsetHeight;
+    })
 </script>
 
 <template>
   <div ref="monConteneur" class="container-image">
-    <img ref="monImage" class="projet1-image" src="/images/immersio_poster.jpg" alt="#"/>
+    <img ref="monImage" @load="handleImageLoad" class="projet1-image" src="/images/immersio_poster.jpg" alt="#"/>
     <div class="bouton-c"></div>
   </div>
 </template>

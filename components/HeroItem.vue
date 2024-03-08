@@ -1,25 +1,39 @@
 <script setup>
   import  Sketch  from '~/assets/js/app.js';
-  import { useElementBounding } from '@vueuse/core'
 
-  const hero = ref();
-  const image = ref();
-  
+const monConteneur = ref()
+  const monImage = ref()
+  const imageLoaded = ref(false);
+  const componentMounted = ref(false);
+  var containerNuxt;
+  var imgNuxt;
+  var widthNuxt;
+  var heightNuxt;
 
-  onMounted(() => {
-    const containerNuxt = hero.value;
-    const imgNuxt = image.value;
-    const widthNuxt = hero.value.offsetWidth;
-    const heightNuxt = hero.value.offsetHeight;
-    new Sketch({dom: containerNuxt, pic: imgNuxt, width: widthNuxt, height: heightNuxt});
-    
+  watchEffect(() => {
+    if (imageLoaded.value && componentMounted.value) {
+      new Sketch({dom: containerNuxt, pic: imgNuxt, width: widthNuxt, height: heightNuxt});
+    }
   });
+
+  function handleImageLoad() {
+    imageLoaded.value = true;
+  }
+
+
+  onMounted(()=> {
+      componentMounted.value = true;
+      containerNuxt = monConteneur.value;
+      imgNuxt = monImage.value;
+      widthNuxt = containerNuxt.offsetWidth;
+      heightNuxt = containerNuxt.offsetHeight;
+  })
 
 </script>
 
 <template>
-  <div ref="hero" data-grid="15" data-mouse="0.13" data-strength="0.15" class="hero">
-    <img ref="image" src="/images/TitreMael.png" alt=""/>
+  <div ref="monConteneur" data-grid="15" data-mouse="0.13" data-strength="0.15" class="hero">
+    <img ref="monImage" @load="handleImageLoad"  src="/images/TitreMael.png" alt=""/>
   </div>
 </template>
 

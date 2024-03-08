@@ -14,6 +14,7 @@ export default class Sketch {
     this.pointer = new THREE.Vector2();
     this.container = options.dom;
     this.img = options.pic;
+    
     this.width = options.width;
     this.height = options.height;
     this.widthNuxt = this.width;
@@ -32,18 +33,19 @@ export default class Sketch {
 
 
     var frustumSize = .9;
-    this.camera = new THREE.OrthographicCamera(frustumSize / -2., frustumSize / 2., frustumSize / 2., frustumSize / -2., -1000, 1000);
+    this.camera = new THREE.OrthographicCamera(frustumSize / -2, frustumSize / 2, frustumSize / 2, frustumSize / -2, -1000, 1000);
     this.camera.position.set(0, 0, 2);
 
     this.time = 0;
-
+    
     this.mouse = {
       x: 0,
       y: 0,
       prevX: 0,
       prevY: 0,
       vX: 0,
-      vY: 0
+      vY: 0,
+      index: 0
     }
 
     this.isPlaying = true;
@@ -52,8 +54,8 @@ export default class Sketch {
     this.resize();
     this.render();
     this.setupResize();
-
-    this.mouseEvents()
+    this.scrollEvents();
+    this.mouseEvents();
 
   }
 
@@ -61,14 +63,27 @@ export default class Sketch {
     return parseFloat(this.container.getAttribute('data-'+val))
   }
 
- 
+  scrollEvents() {
+    window.addEventListener('scroll', () => {
+      
+        this.isScrolling = true;
+        clearTimeout(this.scrollTimeout);
+        this.scrollTimeout = setTimeout(() => {
+            this.mouse.index = 0
+            this.isScrolling = false;
+        }, 50);
+      } 
+    )
+  }
+
+
+
 
   mouseEvents() {
     this.container.addEventListener('mousemove', (e) => {
-      if(this.intersects) {
-        console.log('coucou ' + this.container)
+      if(this.intersects && !this.isScrolling) {
+        this.mouse.index += 1;
         this.mouse.x = e.clientX / this.width;
-        console.log('mouse x ' + this.mouse.x);
         this.mouse.y = e.clientY / this.height;
 
         // console.log(this.mouse.x,this.mouse.y)
@@ -79,9 +94,27 @@ export default class Sketch {
 
         this.mouse.prevX = this.mouse.x
         this.mouse.prevY = this.mouse.y;
-      }
-      // console.log(this.mouse.vX,'vx')
+      }       // console.log(this.mouse.vX,'vx')
     })
+
+    // this.container.addEventListener('mouseenter', (e) => {
+      
+    //   if(this.intersects && this.isScrolling == false) {
+    //     this.mouse.x = e.clientX / this.width;
+    //     this.mouse.y = e.clientY / this.height;
+
+    //     // console.log(this.mouse.x,this.mouse.y)
+
+    //     this.mouse.vX = this.mouse.x - this.mouse.prevX;
+    //     this.mouse.vY = this.mouse.y - this.mouse.prevY;
+
+
+    //     this.mouse.prevX = this.mouse.x
+    //     this.mouse.prevY = this.mouse.y;
+    //   }
+    // }
+    //   // console.log(this.mouse.vX,'vx')
+    // )
   }
 
   settings() {
@@ -116,7 +149,8 @@ export default class Sketch {
 
 
     // image cover
-    this.imageAspect = .55 / 1.5;
+    this.imageAspect = (this.textureBuffer.naturalHeight+220) /  (this.textureBuffer.naturalWidth+220) ;
+    console.log('Aspect : ' + this.imageAspect)
     let a1;
     let a2;
     if (this.height / this.width > this.imageAspect) {
@@ -126,7 +160,6 @@ export default class Sketch {
       a1 = 1;
       a2 = (this.height / this.width) / this.imageAspect;
     }
-
 
     this.material.uniforms.resolution.value.x = this.width;
     this.material.uniforms.resolution.value.y = this.height;
@@ -183,7 +216,11 @@ export default class Sketch {
 
     this.regenerateGrid()
     let texture = new THREE.Texture(this.img)
+    this.textureBuffer = texture.source.data;
+    console.log('la texture : ' + this.textureBuffer);
     texture.needsUpdate = true;
+    console.log('texture height : ' + this.textureBuffer.naturalHeight);
+    console.log('texture width : ' + this.textureBuffer.naturalWidth);
     this.material = new THREE.ShaderMaterial({
       extensions: {
         derivatives: "#extension GL_OES_standard_derivatives : enable"
@@ -216,46 +253,50 @@ export default class Sketch {
 
 
   updateDataTexture() {
-    let data = this.texture.image.data;
-    for (let i = 0; i < data.length; i += 4) {
-      data[i] *= this.settings.relaxation
-      data[i + 1] *= this.settings.relaxation
-    }
+    if(this.mouse.index == 0 || this.mouse.index >= 2) {
+      let data = this.texture.image.data;
+      for (let i = 0; i < data.length; i += 4) {
+        data[i] *= this.settings.relaxation
+        data[i + 1] *= this.settings.relaxation
+      }
 
-    let gridMouseX = this.size * this.mouse.x;
-    let gridMouseY = this.size * (1 - this.mouse.y);
-    let maxDist = this.size * this.settings.mouse;
-    let aspect = this.height / this.width
+      let gridMouseX = this.size * this.mouse.x;
+      let gridMouseY = this.size * (1 - this.mouse.y);
+      let maxDist = this.size * this.settings.mouse;
+      let aspect = this.height / this.width
 
-    for (let i = 0; i < this.size; i++) {
-      for (let j = 0; j < this.size; j++) {
+      for (let i = 0; i < this.size; i++) {
+        for (let j = 0; j < this.size; j++) {
 
-        let distance = ((gridMouseX - i) ** 2) / aspect + (gridMouseY - j) ** 2
-        let maxDistSq = maxDist ** 2;
+          let distance = ((gridMouseX - i) ** 2) / aspect + (gridMouseY - j) ** 2
+          let maxDistSq = maxDist ** 2;
 
-        if (distance < maxDistSq) {
+          if (distance < maxDistSq) {
 
-          let index = 4 * (i + this.size * j);
+            let index = 4 * (i + this.size * j);
 
-          let power = maxDist / Math.sqrt(distance);
-          power = clamp(power, 0, 10)
-          // if(distance <this.size/32) power = 1;
-          // power = 1;
+            let power = maxDist / Math.sqrt(distance);
+            power = clamp(power, 0, 10)
+            // if(distance <this.size/32) power = 1;
+            // power = 1;
 
-          data[index] += this.settings.strength * 100 * this.mouse.vX * power;
-          data[index + 1] -= this.settings.strength * 100 * this.mouse.vY * power;
+            data[index] += this.settings.strength * 100 * this.mouse.vX * power;
+            data[index + 1] -= this.settings.strength * 100 * this.mouse.vY * power;
 
+          }
         }
       }
-    }
 
-    this.mouse.vX *= 0.9;
-    this.mouse.vY *= 0.9;
-    this.texture.needsUpdate = true
+      this.mouse.vX *= 0.9;
+      this.mouse.vY *= 0.9;
+      this.texture.needsUpdate = true
+    }
+    
   }
 
 
   render() {
+    console.log('scrolling : ' + this.isScrolling)
     if (!this.isPlaying) return;
     this.time += 0.05;
     this.updateDataTexture()
